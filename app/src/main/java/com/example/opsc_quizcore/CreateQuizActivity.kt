@@ -84,12 +84,7 @@ class CreateQuizActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     if (response.isSuccessful) {
                         val quizId = response.body()?.quizId
-                        Toast.makeText(
-                            this@CreateQuizActivity,
-                            "Quiz created successfully! ID : ${response.body()?.quizId}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
+                        Toast.makeText(this@CreateQuizActivity, "Quiz created successfully! ID : ${response.body()?.quizId}", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@CreateQuizActivity,QuizActivity::class.java)
                         startActivity(  intent)
                         finish()
@@ -103,11 +98,7 @@ class CreateQuizActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                    Toast.makeText(
-                        this@CreateQuizActivity,
-                        "Failed to create quiz: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@CreateQuizActivity, "Failed to create quiz: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
 
             })
