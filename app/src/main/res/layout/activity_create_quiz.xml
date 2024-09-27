@@ -34,6 +34,22 @@
         android:layout_height="45dp"
         android:layout_margin="20dp"/>
 
+    <TextView
+        android:id="@+id/nameTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:text="Enter a name for your quiz"
+        android:layout_margin="15dp"/>
+
+    <EditText
+        android:id="@+id/nameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:layout_margin="15dp"/>
+
+
 
     <TextView
         android:id="@+id/questionTV"
