@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateQuizActivity"
+    android:orientation="vertical">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/createQuizTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="45dp"
+        android:text="Create Quiz"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
+    <TextView
+        android:id="@+id/categoryTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:text="Choose the category of your quiz"
+        android:layout_marginLeft="15dp"/>
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="20dp"/>
+
+
+    <TextView
+        android:id="@+id/questionTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:text="Create the questions"
+        android:layout_marginLeft="15dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_margin="25dp"
+        android:layout_marginBottom="25dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="20dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/currentQuestionTV"
+                android:text="Question"
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/questionET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Question"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+
+            <TextView
+                android:id="@+id/optionsTV"
+                android:text="Options"
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/optionAET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option A"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+            <EditText
+                android:id="@+id/optionBET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option B"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+            <EditText
+                android:id="@+id/optionCET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option C"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+            <EditText
+                android:id="@+id/optionDET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option D"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:id="@+id/answerTV"
+                android:text="Correct Answer"
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/answerET"
+                android:hint="Correct Answer (Words, not letter)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <Button
+                android:id="@+id/addQuestionBtn"
+                android:text="Add Question"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"/>
+            <Button
+                android:id="@+id/clearQuestionsBtn"
+                android:text="Clear Questions"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/doneBtn"
+        android:text="Create Quiz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="25dp"/>
+
+
+
+
+</LinearLayout>
+</ScrollView>
