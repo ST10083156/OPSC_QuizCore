@@ -17,7 +17,7 @@ interface ApiService {
 
 
     @POST("/CustomQuiz/CreateQuiz/{quiz}")
-    fun CreateQuiz(@Body customQuiz: QuizModel)
+    fun CreateQuiz(@Body customQuiz: CustomQuizModel)
 
     @GET("CustomQuiz/GetMyQuizzes/{id}")
     fun getMyQuizzes(@Query("uid") uid: String): Call<List<CustomQuizModel>>
