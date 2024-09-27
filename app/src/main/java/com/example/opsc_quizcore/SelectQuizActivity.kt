@@ -1,5 +1,6 @@
 package com.example.opsc_quizcore
 
+import android.content.Intent
 import android.os.Bundle
 import android.telecom.Call
 import android.view.LayoutInflater
@@ -56,14 +57,10 @@ class SelectQuizActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
+                //used for implementation
             }
 
-
         }
-
-
-
 
 }
 
@@ -120,8 +117,23 @@ class SelectQuizActivity : AppCompatActivity() {
 
     class QuizAdapter(private val quizList : List<QuizModel>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>(){
         private lateinit var quizItemBinding : QuizListItemBinding
+
+
         inner class QuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
             val quizTV : TextView = quizItemBinding.quizNameTV
+
+            init {
+                itemView.setOnClickListener {
+                    val quiz = quizList[adapterPosition]
+
+                    val intent = Intent(itemView.context,QuizActivity::class.java).apply{
+                        putExtra("questions",ArrayList(quiz.Questions))
+                        putExtra("quizName",quiz.Name)
+                    }
+                    itemView.context.startActivity(intent)
+                }
+            }
+
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuizViewHolder {
@@ -131,7 +143,7 @@ class SelectQuizActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
             val quiz = quizList[position]
-            holder.quizTV
+            holder.quizTV.text = quiz.Name
         }
 
         override fun getItemCount(): Int {
@@ -142,8 +154,21 @@ class SelectQuizActivity : AppCompatActivity() {
     }
     class CustomQuizAdapter(private val quizList : List<CustomQuizModel>) : RecyclerView.Adapter<CustomQuizAdapter.CustomQuizViewHolder>(){
         private lateinit var quizItemBinding : QuizListItemBinding
+
+
         inner class CustomQuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
             val quizTV : TextView = quizItemBinding.quizNameTV
+            init {
+                itemView.setOnClickListener {
+                    val quiz = quizList[adapterPosition]
+
+                    val intent = Intent(itemView.context,QuizActivity::class.java).apply{
+                        putExtra("questions",ArrayList(quiz.Questions))
+                        putExtra("quizName",quiz.QuizName)
+                    }
+                    itemView.context.startActivity(intent)
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomQuizViewHolder {
@@ -153,7 +178,7 @@ class SelectQuizActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: CustomQuizViewHolder, position: Int) {
             val quiz = quizList[position]
-            holder.quizTV
+            holder.quizTV.text = quiz.QuizName
         }
 
         override fun getItemCount(): Int {

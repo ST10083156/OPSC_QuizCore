@@ -15,6 +15,9 @@
         android:theme="@style/Theme.OPSC_QuizCore"
         tools:targetApi="31">
         <activity
+            android:name=".ScoreDisplayActivity"
+            android:exported="false" />
+        <activity
             android:name=".SelectQuizActivity"
             android:exported="false" />
         <activity
