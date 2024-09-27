@@ -38,7 +38,7 @@ class CreateQuizActivity : AppCompatActivity() {
 
 
         binding.addQuestionBtn.setOnClickListener {
-            if (questionsList.count() == 10) {
+            if (questionsList.size == 10) {
                 Toast.makeText(this, "Max 10 questions allowed!", Toast.LENGTH_SHORT).show()
 
             } else {

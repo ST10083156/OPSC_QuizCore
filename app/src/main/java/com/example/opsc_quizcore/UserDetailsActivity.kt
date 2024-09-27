@@ -43,6 +43,7 @@ class UserDetailsActivity : AppCompatActivity() {
                 if(binding.userImageView.drawable == R.drawable.ic_launcher_foreground.toDrawable())
                 {
                     user = UserModel(
+                        ID= auth.uid.toString(),
                         Name = binding.nameET.text.toString(),
                         Username = binding.usernameET.text.toString(),
                         Image = null,
@@ -51,6 +52,7 @@ class UserDetailsActivity : AppCompatActivity() {
                 }
                 else{
                     user = UserModel(
+                        ID = auth.uid.toString(),
                         Name = binding.nameET.text.toString(),
                         Username = binding.usernameET.text.toString(),
                         Image = imageUri,
