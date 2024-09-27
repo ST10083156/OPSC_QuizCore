@@ -1,5 +1,6 @@
 package com.example.opsc_quizcore
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -82,14 +83,16 @@ class CreateQuizActivity : AppCompatActivity() {
             RetrofitClient.instance.createQuiz(customQuiz).enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     if (response.isSuccessful) {
-                        val quizId = response.body()?.quizId // Assuming ApiResponse has quizId
+                        val quizId = response.body()?.quizId
                         Toast.makeText(
                             this@CreateQuizActivity,
-                            "Quiz created successfully",
+                            "Quiz created successfully! ID : ${response.body()?.quizId}",
                             Toast.LENGTH_SHORT
                         ).show()
 
-
+                        val intent = Intent(this@CreateQuizActivity,QuizActivity::class.java)
+                        startActivity(  intent)
+                        finish()
                     } else {
                         Toast.makeText(
                             this@CreateQuizActivity,
