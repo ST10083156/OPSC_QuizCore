@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "652409588740",
+    "project_id": "opsc-quizcore",
+    "storage_bucket": "opsc-quizcore.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652409588740:android:6610e5e3fd756f257df951",
+        "android_client_info": {
+          "package_name": "com.example.opsc_quizcore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652409588740-ikk3k00pqu9md7tsjgjoqeeol09ogi61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDK4bRRp8gTGbBxxkzMyB4fg_TovzdAyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652409588740-ikk3k00pqu9md7tsjgjoqeeol09ogi61.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652409588740:android:ef5de035cc0372a07df951",
+        "android_client_info": {
+          "package_name": "com.example.quizcore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652409588740-ikk3k00pqu9md7tsjgjoqeeol09ogi61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDK4bRRp8gTGbBxxkzMyB4fg_TovzdAyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652409588740-ikk3k00pqu9md7tsjgjoqeeol09ogi61.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

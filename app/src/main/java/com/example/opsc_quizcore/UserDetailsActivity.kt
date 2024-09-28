@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -77,6 +78,7 @@ class UserDetailsActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                         Toast.makeText(this@UserDetailsActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("Error",t.message.toString())
                     }
                 })
 
