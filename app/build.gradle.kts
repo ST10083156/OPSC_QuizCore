@@ -54,7 +54,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.google.firebase:firebase-auth:23.0.0")
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-bom:33.3.0")
     implementation("com.google.firebase:firebase-firestore:25.1.0")
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")

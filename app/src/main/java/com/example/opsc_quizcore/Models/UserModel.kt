@@ -9,7 +9,7 @@ data class UserModel(
     val Name: String,
     val Username: String,
     val Image: Uri?,
-    val Score: Int
+    val Score: Int,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

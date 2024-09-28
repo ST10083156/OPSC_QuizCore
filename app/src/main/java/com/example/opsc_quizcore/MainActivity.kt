@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         val email = binding.emailET.text.toString()
         val password = binding.passwordET.text.toString()
 
-        //attempts to sign user in with email and password
+
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) {
             if (it.isSuccessful)
             {

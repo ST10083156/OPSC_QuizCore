@@ -67,6 +67,9 @@ class UserDetailsActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@UserDetailsActivity, "User added successfully!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@UserDetailsActivity, DashboardActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         } else {
                             Toast.makeText(this@UserDetailsActivity, "Failed to add user: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
                         }
@@ -76,9 +79,7 @@ class UserDetailsActivity : AppCompatActivity() {
                         Toast.makeText(this@UserDetailsActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
-            val intent = Intent(this,DashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+
 
         }
 
