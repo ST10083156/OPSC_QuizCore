@@ -1,6 +1,8 @@
 package com.example.opsc_quizcore
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -33,6 +35,9 @@ private lateinit var db : FirebaseFirestore
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        applySavedTheme()
+
         val categories = listOf("Sports","Entertainment","Animals","Geography","Other")
         val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
@@ -114,6 +119,19 @@ private lateinit var db : FirebaseFirestore
 
 
             }
+    }
+
+    private fun applySavedTheme() {
+        // Retrieve saved theme from SharedPreferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+
+        // Set background color based on saved theme
+        when (savedTheme) {
+            "White" -> window.decorView.setBackgroundColor(Color.WHITE)
+            "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
+            "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
+        }
     }
         fun checkInput(): Boolean{
 

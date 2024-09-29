@@ -2,6 +2,8 @@ package com.example.opsc_quizcore
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -34,6 +36,7 @@ class UserDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+        applySavedTheme()
         auth = FirebaseAuth.getInstance()
         binding.addImageBtn.setOnClickListener{
             pictureAdd()
@@ -105,6 +108,19 @@ class UserDetailsActivity : AppCompatActivity() {
             val selectedImageUri = data.data
             binding.userImageView.setImageURI(selectedImageUri)
             imageUri=selectedImageUri
+        }
+    }
+
+    private fun applySavedTheme() {
+        // Retrieve saved theme from SharedPreferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+
+        // Set background color based on saved theme
+        when (savedTheme) {
+            "White" -> window.decorView.setBackgroundColor(Color.WHITE)
+            "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
+            "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
         }
     }
 

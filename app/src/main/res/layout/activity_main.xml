@@ -32,7 +32,6 @@
                 android:textSize="36sp"
                 android:textStyle="bold"/>
 
-
             <EditText
                 android:id="@+id/emailET"
                 android:layout_width="match_parent"
@@ -41,8 +40,7 @@
                 android:drawablePadding="8dp"
                 android:hint="Enter your email"
                 android:padding="8dp"
-                android:textColor="@color/black" />
-
+                android:textColor="@color/black"/>
 
             <EditText
                 android:id="@+id/passwordET"
@@ -53,7 +51,7 @@
                 android:hint="Enter your password"
                 android:inputType="textPassword"
                 android:padding="8dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/loginBtn"
@@ -63,7 +61,7 @@
                 android:backgroundTint="@color/teal_200"
                 android:text="Login"
                 android:textSize="18sp"
-                app:cornerRadius="20dp" />
+                app:cornerRadius="20dp"/>
 
             <Button
                 android:id="@+id/regBtn"
@@ -73,16 +71,30 @@
                 android:backgroundTint="@color/teal_700"
                 android:text="Register"
                 android:textSize="18sp"
-                app:cornerRadius="20dp" />
+                app:cornerRadius="20dp"/>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <Button
         android:id="@+id/googleBtn"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_margin="30dp"        android:backgroundTint="@color/lavender"
+        android:layout_margin="30dp"
+        android:backgroundTint="@color/lavender"
         android:text="Sign in with Google"
         android:textSize="18sp"
-        app:cornerRadius="20dp" />
+        app:cornerRadius="20dp"/>
+
+    <!-- Add Settings Button -->
+    <Button
+        android:id="@+id/settingsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/purple_500"
+        android:text="Settings"
+        android:textSize="18sp"
+        app:cornerRadius="20dp"/>
 </LinearLayout>

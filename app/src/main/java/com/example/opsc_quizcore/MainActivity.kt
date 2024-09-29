@@ -1,6 +1,8 @@
 package com.example.opsc_quizcore
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -35,13 +37,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        applySavedTheme()
+
+        // Google sign-in setup
         val googleSO = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
-        googleSignInClient = GoogleSignIn.getClient(this,googleSO)
+        googleSignInClient = GoogleSignIn.getClient(this, googleSO)
 
-        binding.loginBtn.setOnClickListener{
-            if(!binding.emailET.text.toString().isEmpty() && !binding.passwordET.text.toString().isEmpty()) {
+        // Login button click listener
+        binding.loginBtn.setOnClickListener {
+            if (!binding.emailET.text.toString().isEmpty() && !binding.passwordET.text.toString().isEmpty()) {
                 login()
             }
             else
@@ -49,18 +56,39 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
         }
-        binding.regBtn.setOnClickListener{
-            if(!binding.emailET.text.toString().isEmpty() && !binding.passwordET.text.toString().isEmpty()) {
+
+        // Register button click listener
+        binding.regBtn.setOnClickListener {
+            if (!binding.emailET.text.toString().isEmpty() && !binding.passwordET.text.toString().isEmpty()) {
                 register()
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
             }
         }
-        binding.googleBtn.setOnClickListener{
-                googleSSO()
 
+        // Google Sign-In button click listener
+        binding.googleBtn.setOnClickListener {
+            googleSSO()
+        }
+
+        // Settings button click listener
+        binding.settingsBtn.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun applySavedTheme() {
+        // Retrieve saved theme from SharedPreferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+
+        // Set background color based on saved theme
+        when (savedTheme) {
+            "White" -> window.decorView.setBackgroundColor(Color.WHITE)
+            "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
+            "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
         }
     }
 
@@ -139,22 +167,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun checkUser(){
-        val userID = auth.uid.toString()
-        db.collection("Users").whereEqualTo("id",userID).get().addOnSuccessListener {
-                users -> if (users.isEmpty)
-        {
-            val intent = Intent(this, UserDetailsActivity::class.java)
-            startActivity(intent)
-            finish()
-
-        }
-        else
-        {
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+    private fun checkUser() {
+        val userID = auth.uid
+        db.collection("Users").whereEqualTo("ID", userID).get().addOnSuccessListener { users ->
+            if (users.isEmpty) {
+                val intent = Intent(this, UserDetailsActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this, DashboardActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 
