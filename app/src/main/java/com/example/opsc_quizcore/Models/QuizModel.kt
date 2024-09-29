@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class QuizModel(
-    val Name: String,
-    val Category: String,
-    val Questions: List<QuestionModel>
+    val Name: String ="",
+    val Category: String = "",
+    val Questions: List<QuestionModel> = emptyList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

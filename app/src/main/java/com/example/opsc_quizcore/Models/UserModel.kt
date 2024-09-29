@@ -5,17 +5,18 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class UserModel(
-    val ID: String,
-    val Name: String,
-    val Username: String,
-    val Image: Uri?,
-    val Score: Int,
+    var ID: String = "",
+    var Name: String = "",
+    var Username: String = "",
+    var Image: String? = null,
+    var Score: Int = 0
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readParcelable(Uri::class.java.classLoader),
+        parcel.readString(),
         parcel.readInt()
     )
 
@@ -23,8 +24,13 @@ data class UserModel(
         parcel.writeString(ID)
         parcel.writeString(Name)
         parcel.writeString(Username)
-        parcel.writeParcelable(Image, flags)
+        parcel.writeString(Image)  
         parcel.writeInt(Score)
+    }
+
+
+    fun getImageUri(): Uri? {
+        return Image?.let { Uri.parse(it) }
     }
 
     override fun describeContents(): Int {

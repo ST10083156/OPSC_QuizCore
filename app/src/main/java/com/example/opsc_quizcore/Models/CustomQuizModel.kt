@@ -4,10 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class CustomQuizModel(
-    val UserID: String,
-    val QuizName: String,
-    val Category: String,
-    val Questions: List<QuestionModel>
+    val UserID: String = "",
+    val QuizName: String= "",
+    val Category: String= "",
+    val Questions: List<QuestionModel> = emptyList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

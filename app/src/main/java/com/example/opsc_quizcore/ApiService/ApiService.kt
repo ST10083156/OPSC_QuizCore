@@ -16,16 +16,16 @@ import retrofit2.http.Query
 interface ApiService {
 
 
-    @POST("/CustomQuiz/CreateQuiz/{quiz}")
+    @POST("/CustomQuiz/create-quiz/{quiz}")
     fun createQuiz(@Body customQuiz: CustomQuizModel) : Call<ApiResponse>
 
-    @GET("CustomQuiz/GetMyQuizzes/{id}")
+    @GET("CustomQuiz/my-quizzes/{id}")
     fun getMyQuizzes(@Query("uid") uid: String): Call<List<CustomQuizModel>>
 
-    @POST("api/user/add-user")
+    @POST("api/User/add-user")
     fun addUser(@Body user: UserModel): Call<ApiResponse>
 
-    @POST("api/user/update-settings")
+    @POST("api/User/update-settings")
     fun updateSettings(@Body settings: SettingsModel, @Query("uid") uid: String): Call<ApiResponse>
 
 
@@ -33,7 +33,7 @@ interface ApiService {
 }
 
 object RetrofitClient {
-    private const val BASE_URL = "https://10.0.2.2:7266/api/" // Replace with your API base URL
+    private const val BASE_URL = "https://10.0.2.2:7266/" // Replace with your API base URL
 
     val instance: ApiService by lazy {
         Retrofit.Builder()

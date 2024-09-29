@@ -30,14 +30,18 @@ class QuizActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_quiz)
+        setContentView(binding.root)
 
 
         quizName = intent.getStringExtra("quizName").toString()
         questions = intent.getParcelableArrayListExtra("questions") ?: emptyList()
         binding.questionResultTV.visibility = View.INVISIBLE
-        startQuestion(questions[currentQuestionIndex])
+        if(questions.isEmpty()){
 
+        }
+        else {
+            startQuestion(questions[currentQuestionIndex])
+        }
 
 
 

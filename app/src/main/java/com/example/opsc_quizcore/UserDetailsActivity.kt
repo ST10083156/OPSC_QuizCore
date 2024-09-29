@@ -30,6 +30,7 @@ class UserDetailsActivity : AppCompatActivity() {
     private lateinit var user : UserModel
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityUserDetailsBinding.inflate(layoutInflater)
+        db = FirebaseFirestore.getInstance()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -56,14 +57,20 @@ class UserDetailsActivity : AppCompatActivity() {
                         ID = auth.uid.toString(),
                         Name = binding.nameET.text.toString(),
                         Username = binding.usernameET.text.toString(),
-                        Image = imageUri,
+                        Image = imageUri.toString(),
                         Score = 0
                     )
                 }
 
             }
 
-            RetrofitClient.instance.addUser(user)
+            db.collection("Users").add(user)
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+            finish()
+
+
+           /* RetrofitClient.instance.addUser(user)
                 .enqueue(object : Callback<ApiResponse> {
                     override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                         if (response.isSuccessful) {
@@ -80,7 +87,8 @@ class UserDetailsActivity : AppCompatActivity() {
                         Toast.makeText(this@UserDetailsActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                         Log.e("Error",t.message.toString())
                     }
-                })
+                })*/
+
 
 
         }

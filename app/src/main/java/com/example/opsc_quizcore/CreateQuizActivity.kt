@@ -15,6 +15,7 @@ import com.example.opsc_quizcore.Models.QuestionModel
 import com.example.opsc_quizcore.databinding.ActivityCreateQuizBinding
 import com.example.opsc_quizcore.databinding.ActivityDashboardBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,11 +24,12 @@ class CreateQuizActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateQuizBinding
     private lateinit var auth : FirebaseAuth
     private lateinit var questionsList : MutableList<QuestionModel>
-
+private lateinit var db : FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCreateQuizBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
         questionsList = mutableListOf()
+        db = FirebaseFirestore.getInstance()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -80,7 +82,14 @@ class CreateQuizActivity : AppCompatActivity() {
                     Questions = questionsList
             )
 
-            RetrofitClient.instance.createQuiz(customQuiz).enqueue(object : Callback<ApiResponse> {
+            db.collection("CustomQuizzes").add(customQuiz).addOnSuccessListener {
+                Toast.makeText(this@CreateQuizActivity, "Quiz created successfully!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@CreateQuizActivity,QuizActivity::class.java)
+                startActivity(  intent)
+                finish()
+            }
+
+            /*RetrofitClient.instance.createQuiz(customQuiz).enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     if (response.isSuccessful) {
                         val quizId = response.body()?.quizId
@@ -101,7 +110,7 @@ class CreateQuizActivity : AppCompatActivity() {
                     Toast.makeText(this@CreateQuizActivity, "Failed to create quiz: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
 
-            })
+            })*/
 
 
             }
@@ -129,7 +138,6 @@ class CreateQuizActivity : AppCompatActivity() {
         fun clearInput()
         {
             binding.questionET.text.clear()
-            binding.nameET.text.clear()
             binding.optionAET.text.clear()
             binding.optionBET.text.clear()
             binding.optionCET.text.clear()

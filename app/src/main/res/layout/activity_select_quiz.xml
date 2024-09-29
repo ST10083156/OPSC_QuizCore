@@ -40,7 +40,7 @@
         android:elevation="25dp"/>
 
     <Button
-        android:id="@+id/returnBtn"
+        android:id="@+id/backBtn"
         android:text="Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

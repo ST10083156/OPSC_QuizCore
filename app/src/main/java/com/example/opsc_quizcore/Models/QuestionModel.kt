@@ -4,12 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class QuestionModel(
-    val Question: String,
-    val Answer_1: String,
-    val Answer_2: String,
-    val Answer_3: String,
-    val Answer_4: String,
-    val CorrectAnswer: String
+    val Question: String = "",
+    val Answer_1: String = "",
+    val Answer_2: String= "",
+    val Answer_3: String= "",
+    val Answer_4: String= "",
+    val CorrectAnswer: String= ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

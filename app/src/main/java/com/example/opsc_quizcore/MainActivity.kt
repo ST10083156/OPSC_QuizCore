@@ -140,8 +140,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkUser(){
-        val userID = auth.uid
-        db.collection("Users").whereEqualTo("ID",userID).get().addOnSuccessListener {
+        val userID = auth.uid.toString()
+        db.collection("Users").whereEqualTo("id",userID).get().addOnSuccessListener {
                 users -> if (users.isEmpty)
         {
             val intent = Intent(this, UserDetailsActivity::class.java)

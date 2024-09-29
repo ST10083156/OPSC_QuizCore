@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.opsc_quizcore.Models.UserModel
@@ -27,6 +28,7 @@ class LeaderboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
         val usersList = mutableListOf<UserModel>()
 
         db.collection("Users").get().addOnSuccessListener { documents ->
@@ -34,19 +36,21 @@ class LeaderboardActivity : AppCompatActivity() {
                 documents.forEach { user ->
                     usersList.add(user.toObject(UserModel::class.java))
                 }
+
+                usersList.sortByDescending { it.Score }
+
+                val adapter = LeaderboardAdapter(this, usersList)
+                binding.userListView.adapter = adapter
             }
+        }.addOnFailureListener { exception ->
+            Toast.makeText(this, "Error fetching users: ${exception.message}", Toast.LENGTH_SHORT).show()
         }
 
-        val adapter = LeaderboardAdapter(this, usersList)
-        binding.userListView.adapter = adapter
-
-        binding.backBtn.setOnClickListener{
-            val intent = Intent(this,DashboardActivity::class.java)
+        binding.backBtn.setOnClickListener {
+            val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
             finish()
         }
-
-
     }
 }
 
