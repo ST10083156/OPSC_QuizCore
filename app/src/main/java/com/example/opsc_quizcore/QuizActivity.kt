@@ -1,6 +1,8 @@
 package com.example.opsc_quizcore
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -32,6 +34,7 @@ class QuizActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_quiz)
 
+        applySavedTheme()
 
         quizName = intent.getStringExtra("quizName").toString()
         questions = intent.getParcelableArrayListExtra("questions") ?: emptyList()
@@ -183,6 +186,18 @@ class QuizActivity : AppCompatActivity() {
             binding.questionResultTV.text = "Correct!"
             binding.questionResultTV.setTextColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
 
+        }
+    }
+    private fun applySavedTheme() {
+        // Retrieve saved theme from SharedPreferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+
+        // Set background color based on saved theme
+        when (savedTheme) {
+            "White" -> window.decorView.setBackgroundColor(Color.WHITE)
+            "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
+            "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
         }
     }
 

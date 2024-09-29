@@ -1,6 +1,8 @@
 package com.example.opsc_quizcore
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.telecom.Call
 import android.view.LayoutInflater
@@ -43,6 +45,8 @@ class SelectQuizActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_select_quiz)
+
+        applySavedTheme()
         val categories = listOf("Sports","Entertainment","Animals","Geography","My Custom Quizzes")
         val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
@@ -186,5 +190,18 @@ class SelectQuizActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun applySavedTheme() {
+        // Retrieve saved theme from SharedPreferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+
+        // Set background color based on saved theme
+        when (savedTheme) {
+            "White" -> window.decorView.setBackgroundColor(Color.WHITE)
+            "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
+            "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
+        }
     }
 }
