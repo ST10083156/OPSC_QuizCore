@@ -49,7 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
             Log.e("SettingsActivity", "View with ID 'main' is null!");
         }
 
-        // Initialize UI components
         rgColors = findViewById(R.id.rgColors);
         rbRed = findViewById(R.id.rbWhite);
         rbBlue = findViewById(R.id.rbBlue);
@@ -64,19 +63,17 @@ public class SettingsActivity extends AppCompatActivity {
         btnSaveSettings = findViewById(R.id.btnSaveSettings);
         btnBack = findViewById(R.id.btnBack);
 
-        // Load saved UI state on activity start
         loadUIState();
 
         btnSaveSettings.setOnClickListener(v -> {
             saveSettings();
-            // Apply the settings immediately to reflect changes
             applySettingsToUI(settingsModel);
         });
 
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
             startActivity(intent);
-            finish();  // Closes the current activity
+            finish();
         });
     }
 
@@ -112,10 +109,8 @@ public class SettingsActivity extends AppCompatActivity {
         String selectedFontSize = rbSmall.isChecked() ? "Small" : (rbMedium.isChecked() ? "Medium" : "Large");
         String selectedMode = switchDarkMode.isChecked() ? "Dark" : "Light";
 
-        // Update the settingsModel object with the new values
         settingsModel = new SettingsModel(settingsModel.getUserID(), selectedMode, selectedColor, selectedFontSize);
 
-        // Save the settings into SharedPreferences
         saveUIState(selectedColor, selectedFontSize, selectedMode);
 
         Toast.makeText(this, "Settings Saved:\nTheme: " + settingsModel.getTheme() +
@@ -130,33 +125,30 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString("theme", theme);
         editor.putString("fontSize", fontSize);
         editor.putString("mode", mode);
-        editor.apply();  // Save asynchronously
+        editor.apply();
     }
 
     private void loadUIState() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
-        String savedTheme = sharedPreferences.getString("theme", "Red"); // Default to Red if not found
-        String savedFontSize = sharedPreferences.getString("fontSize", "Small"); // Default to Small
-        String savedMode = sharedPreferences.getString("mode", "Light"); // Default to Light
+        String savedTheme = sharedPreferences.getString("theme", "Red");
+        String savedFontSize = sharedPreferences.getString("fontSize", "Small");
+        String savedMode = sharedPreferences.getString("mode", "Light");
 
-        // Apply UI based on saved preferences
         applyUIChange(savedTheme, savedFontSize, savedMode);
     }
 
     private void applyUIChange(String theme, String fontSize, String mode) {
-        // Apply the theme
         if (theme.equals("White")) {
             rbRed.setChecked(true);
             getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         } else if (theme.equals("Blue")) {
             rbBlue.setChecked(true);
-            getWindow().getDecorView().setBackgroundColor(Color.BLUE); // Optional: Set background color for blue
+            getWindow().getDecorView().setBackgroundColor(Color.BLUE);
         } else if (theme.equals("Green")) {
             rbGreen.setChecked(true);
-            getWindow().getDecorView().setBackgroundColor(Color.GREEN); // Optional: Set background color for green
+            getWindow().getDecorView().setBackgroundColor(Color.GREEN);
         }
 
-        // Apply the font size
         if (fontSize.equals("Small")) {
             rbSmall.setChecked(true);
         } else if (fontSize.equals("Medium")) {
@@ -165,7 +157,6 @@ public class SettingsActivity extends AppCompatActivity {
             rbLarge.setChecked(true);
         }
 
-        // Apply dark mode switch
         switchDarkMode.setChecked("Dark".equals(mode));
     }
 }

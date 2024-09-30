@@ -20,6 +20,7 @@ class LeaderboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLeaderboardBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityLeaderboardBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
@@ -27,26 +28,32 @@ class LeaderboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+
         val usersList = mutableListOf<UserModel>()
 
-        db.collection("Users").get().addOnSuccessListener { documents ->
-            if (!documents.isEmpty) {
-                documents.forEach { user ->
-                    usersList.add(user.toObject(UserModel::class.java))
+
+        db.collection("Users")
+            .orderBy("Score", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    documents.forEach { user ->
+                        usersList.add(user.toObject(UserModel::class.java))
+                    }
                 }
+
+
+                val adapter = LeaderboardAdapter(this, usersList)
+                binding.userListView.adapter = adapter
             }
-        }
 
-        val adapter = LeaderboardAdapter(this, usersList)
-        binding.userListView.adapter = adapter
 
-        binding.backBtn.setOnClickListener{
-            val intent = Intent(this,DashboardActivity::class.java)
+        binding.backBtn.setOnClickListener {
+            val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
             finish()
         }
-
-
     }
 }
 
@@ -65,7 +72,6 @@ class LeaderboardAdapter(
 
         val currentUser = getItem(position)
 
-
         if (currentUser?.Image == null) {
             listItemBinding.usernameTV.text = currentUser?.Username.toString()
             listItemBinding.leaderboardScoreTv.text = currentUser?.Score.toString()
@@ -77,8 +83,6 @@ class LeaderboardAdapter(
             listItemBinding.userImage.setImageURI(imageUri)
         }
 
-
         return listItemBinding.root
     }
 }
-

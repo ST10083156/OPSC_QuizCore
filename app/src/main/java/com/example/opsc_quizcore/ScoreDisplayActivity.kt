@@ -65,11 +65,9 @@ class ScoreDisplayActivity : AppCompatActivity() {
     }
 
     private fun applySavedTheme() {
-        // Retrieve saved theme from SharedPreferences
         val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
-        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red")
 
-        // Set background color based on saved theme
         when (savedTheme) {
             "White" -> window.decorView.setBackgroundColor(Color.WHITE)
             "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)

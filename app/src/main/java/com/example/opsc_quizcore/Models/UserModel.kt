@@ -1,21 +1,20 @@
 package com.example.opsc_quizcore.Models
 
-import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 
 data class UserModel(
-    val ID: String,
-    val Name: String,
-    val Username: String,
-    val Image: Uri?,
-    val Score: Int,
+    val ID: String = "",            // Default value for ID
+    val Name: String = "",          // Default value for Name
+    val Username: String = "",      // Default value for Username
+    val Image: String? = null,      // Default value for Image
+    val Score: Int = 0              // Default value for Score
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readParcelable(Uri::class.java.classLoader),
+        parcel.readString(),
         parcel.readInt()
     )
 
@@ -23,7 +22,7 @@ data class UserModel(
         parcel.writeString(ID)
         parcel.writeString(Name)
         parcel.writeString(Username)
-        parcel.writeParcelable(Image, flags)
+        parcel.writeString(Image)
         parcel.writeInt(Score)
     }
 

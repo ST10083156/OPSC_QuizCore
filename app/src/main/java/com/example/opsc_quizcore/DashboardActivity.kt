@@ -17,13 +17,15 @@ class DashboardActivity : AppCompatActivity() {
     private var user: UserModel? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        enableEdgeToEdge()
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(binding.root)
 
         applySavedTheme()
 
@@ -31,17 +33,31 @@ class DashboardActivity : AppCompatActivity() {
 
         db.collection("Users").whereEqualTo("ID", userID).limit(1).get()
             .addOnSuccessListener { userSnapshot ->
-                val userDocument = userSnapshot.documents[0]
-                user = userDocument.toObject(UserModel::class.java)
-            }
-        if (user?.Image != null) {
-            val profileImage = user?.Image.toString()
-            val imageUri = Uri.parse(profileImage)
-            binding.userProfileImage.setImageURI(imageUri)
-        }
 
-        binding.userTV.text = user?.Username.toString()
-        binding.scoreTv.text = user?.Score.toString()
+                if (userSnapshot.documents.isNotEmpty()) {
+                    val userDocument = userSnapshot.documents[0]
+                    user = userDocument.toObject(UserModel::class.java)
+
+
+                    if (user?.Image != null) {
+                        val profileImage = user?.Image.toString()
+                        val imageUri = Uri.parse(profileImage)
+                        binding.userProfileImage.setImageURI(imageUri)
+                    }
+
+                    binding.userTV.text = user?.Username.toString()
+                    binding.scoreTv.text = user?.Score.toString()
+                } else {
+                    binding.userTV.text = "User not found"
+                    binding.scoreTv.text = "0"
+                    binding.userProfileImage.setImageURI(null)
+                }
+            }
+            .addOnFailureListener { e ->
+                binding.userTV.text = "Error: ${e.message}"
+                binding.scoreTv.text = "0"
+                binding.userProfileImage.setImageURI(null)
+            }
 
         binding.leaderboardBtn.setOnClickListener {
             val intent = Intent(this, LeaderboardActivity::class.java)
@@ -54,23 +70,21 @@ class DashboardActivity : AppCompatActivity() {
             finish()
         }
         binding.quizBtn.setOnClickListener {
-            val intent = Intent(this, QuizActivity::class.java)
+            val intent = Intent(this, SelectQuizActivity::class.java)
             startActivity(intent)
             finish()
         }
-
     }
 
     private fun applySavedTheme() {
-        // Retrieve saved theme from SharedPreferences
         val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
-        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red")
 
-        // Set background color based on saved theme
         when (savedTheme) {
             "White" -> window.decorView.setBackgroundColor(Color.WHITE)
             "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
             "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
+            else -> window.decorView.setBackgroundColor(Color.RED)
         }
     }
 }

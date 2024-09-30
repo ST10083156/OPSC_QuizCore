@@ -9,104 +9,57 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.transition.Visibility
 import com.example.opsc_quizcore.ApiService.RetrofitClient
 import com.example.opsc_quizcore.Models.QuestionModel
-import com.example.opsc_quizcore.Models.QuizModel
 import com.example.opsc_quizcore.databinding.ActivityQuizBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class QuizActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityQuizBinding
-    private lateinit var auth : FirebaseAuth
-    private lateinit var quizName : String
+    private lateinit var binding: ActivityQuizBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var quizName: String
     private var currentQuestionIndex = 0
     private lateinit var questions: List<QuestionModel>
     private lateinit var countDownTimer: CountDownTimer
-    private var score : Int = 0
+    private var score: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityQuizBinding.inflate(layoutInflater)
-        auth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
+        binding = ActivityQuizBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_quiz)
+        setContentView(binding.root)
 
+        auth = FirebaseAuth.getInstance()
         applySavedTheme()
 
         quizName = intent.getStringExtra("quizName").toString()
-        questions = intent.getParcelableArrayListExtra("questions") ?: emptyList()
+        questions = intent.getParcelableArrayListExtra<QuestionModel>("questions") ?: emptyList()
+
         binding.questionResultTV.visibility = View.INVISIBLE
-        startQuestion(questions[currentQuestionIndex])
 
-
-
-
+        if (questions.isNotEmpty()) {
+            startQuestion(questions[currentQuestionIndex])
+        } else {
+            displayError("No questions available.")
+        }
     }
 
     private fun startQuestion(question: QuestionModel) {
         binding.quizNameTV.text = quizName
-        binding.questionTV.text = question.Question
+        binding.questionTV.text = question.QuestionText // Corrected reference here
         binding.optionABtn.text = question.Answer_1
         binding.optionBBtn.text = question.Answer_2
         binding.optionCBtn.text = question.Answer_3
         binding.optionDBtn.text = question.Answer_4
         binding.questionResultTV.visibility = View.INVISIBLE
 
-        binding.optionABtn.setOnClickListener{
-            if(binding.optionABtn.text.toString().equals(questions[currentQuestionIndex])){
-                displayResult(true)
-                checkCorrectAnswer(binding.optionABtn.text.toString())
+        val options = listOf(binding.optionABtn, binding.optionBBtn, binding.optionCBtn, binding.optionDBtn)
+        options.forEach { button ->
+            button.setOnClickListener {
+                checkAnswer(button.text.toString(), question.CorrectAnswer)
+                countDownTimer.cancel()
+                afterClick()
             }
-            else{
-                displayResult(false)
-                checkCorrectAnswer(binding.optionABtn.text.toString())
-                binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
-            }
-            countDownTimer.cancel()
-            afterClick()
-        }
-        binding.optionBBtn.setOnClickListener{
-            if(binding.optionBBtn.text.toString().equals(questions[currentQuestionIndex])){
-                displayResult(true)
-                checkCorrectAnswer(binding.optionBBtn.text.toString())
-            }
-            else{
-                displayResult(false)
-                checkCorrectAnswer(binding.optionBBtn.text.toString())
-                binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
-            }
-            countDownTimer.cancel()
-            afterClick()
-        }
-        binding.optionCBtn.setOnClickListener{
-            if(binding.optionCBtn.text.toString().equals(questions[currentQuestionIndex])){
-                displayResult(true)
-
-                checkCorrectAnswer(binding.optionCBtn.text.toString())
-            }
-            else{
-                displayResult(false)
-                checkCorrectAnswer(binding.optionCBtn.text.toString())
-                binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
-            }
-            countDownTimer.cancel()
-            afterClick()
-        }
-        binding.optionDBtn.setOnClickListener{
-            if(binding.optionDBtn.text.toString().equals(questions[currentQuestionIndex])){
-               displayResult(true)
-                checkCorrectAnswer(binding.optionDBtn.text.toString())
-            }
-            else{
-                displayResult(false)
-                checkCorrectAnswer(binding.optionDBtn.text.toString())
-                binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
-            }
-            countDownTimer.cancel()
-            afterClick()
         }
         startCountDownTimer()
     }
@@ -122,83 +75,73 @@ class QuizActivity : AppCompatActivity() {
             override fun onFinish() {
                 binding.secondsProgressBar.progress = 0
                 displayResult(false)
-                currentQuestionIndex++
-                if (currentQuestionIndex < questions.size) {
-                    startQuestion(questions[currentQuestionIndex])
-                } else {
-                    val intent = Intent(this@QuizActivity,ScoreDisplayActivity::class.java).apply{
-                        putExtra("score",score)
-                    }
-                    startActivity(intent)
-                    finish()
-                }
+                proceedToNextQuestion()
             }
         }.start()
     }
-    fun afterClick(){
+
+    private fun afterClick() {
         binding.secondsProgressBar.progress = 0
-        displayResult(false)
+        proceedToNextQuestion()
+    }
+
+    private fun proceedToNextQuestion() {
         currentQuestionIndex++
         if (currentQuestionIndex < questions.size) {
             startQuestion(questions[currentQuestionIndex])
         } else {
-            val intent = Intent(this,ScoreDisplayActivity::class.java).apply{
-                putExtra("score",score)
+            showScore()
+        }
+    }
+
+    private fun checkAnswer(selectedAnswer: String, correctAnswer: String) {
+        if (selectedAnswer == correctAnswer) {
+            score++
+            displayResult(true)
+        } else {
+            displayResult(false)
+            highlightIncorrectAnswer(selectedAnswer)
+        }
+    }
+
+    private fun highlightIncorrectAnswer(selectedAnswer: String) {
+        val options = listOf(binding.optionABtn, binding.optionBBtn, binding.optionCBtn, binding.optionDBtn)
+        options.forEach { button ->
+            if (button.text.toString() == selectedAnswer) {
+                button.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
             }
-            startActivity(intent)
-            finish()
         }
     }
 
-    fun checkCorrectAnswer(correctAnswer : String){
-        if(correctAnswer.equals(binding.optionABtn.text))
-        {
-            binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score ++
-        }
-        if(correctAnswer.equals(binding.optionBBtn.text))
-        {
-            binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score++
-        }
-        if(correctAnswer.equals(binding.optionCBtn.text))
-        {
-            binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score++
-        }
-        if(correctAnswer.equals(binding.optionDBtn.text))
-        {
-            binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score++
-        }
+    private fun displayResult(result: Boolean) {
+        binding.questionResultTV.visibility = View.VISIBLE
+        binding.questionResultTV.text = if (result) "Correct!" else "Wrong!"
+        binding.questionResultTV.setTextColor(ContextCompat.getColor(this, if (result) R.color.green else R.color.red))
     }
 
-    fun displayResult(result: Boolean){
-        if(result == false)
-        {
-            binding.questionResultTV.visibility = View.VISIBLE
-            binding.questionResultTV.text = "Wrong!"
-            binding.questionResultTV.setTextColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
-
+    private fun showScore() {
+        val intent = Intent(this, ScoreDisplayActivity::class.java).apply {
+            putExtra("score", score)
         }
-        if(result == true){
-            binding.questionResultTV.visibility = View.VISIBLE
-            binding.questionResultTV.text = "Correct!"
-            binding.questionResultTV.setTextColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-
-        }
+        startActivity(intent)
+        finish()
     }
+
     private fun applySavedTheme() {
-        // Retrieve saved theme from SharedPreferences
         val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
-        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red")
 
-        // Set background color based on saved theme
         when (savedTheme) {
             "White" -> window.decorView.setBackgroundColor(Color.WHITE)
             "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
             "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
+            else -> window.decorView.setBackgroundColor(Color.RED) // Default theme
         }
     }
 
+    private fun displayError(message: String) {
+        binding.questionResultTV.visibility = View.VISIBLE
+        binding.questionResultTV.text = message
+        binding.questionResultTV.setTextColor(ContextCompat.getColor(this, R.color.red))
+    }
 }

@@ -4,25 +4,26 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class CustomQuizModel(
+    val Id: Int = 0,
     val UserID: String,
     val QuizName: String,
     val Category: String,
     val Questions: List<QuestionModel>
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        mutableListOf<QuestionModel>().apply {
-            parcel.readList(this, QuestionModel::class.java.classLoader)
-        }
+        Id = parcel.readInt(),
+        UserID = parcel.readString() ?: "",
+        QuizName = parcel.readString() ?: "",
+        Category = parcel.readString() ?: "",
+        Questions = parcel.createTypedArrayList(QuestionModel.CREATOR) ?: emptyList()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(Id)
         parcel.writeString(UserID)
         parcel.writeString(QuizName)
         parcel.writeString(Category)
-        parcel.writeList(Questions)
+        parcel.writeTypedList(Questions)
     }
 
     override fun describeContents(): Int {

@@ -4,204 +4,207 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.telecom.Call
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.opsc_quizcore.ApiService.RetrofitClient
 import com.example.opsc_quizcore.Models.CustomQuizModel
 import com.example.opsc_quizcore.Models.QuizModel
 import com.example.opsc_quizcore.databinding.ActivitySelectQuizBinding
-import com.example.opsc_quizcore.databinding.QuizListItemBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
-import org.w3c.dom.Text
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SelectQuizActivity : AppCompatActivity() {
-    private lateinit var binding : ActivitySelectQuizBinding
-    private lateinit var auth : FirebaseAuth
-    private lateinit var db : FirebaseFirestore
-    private lateinit var quizList : MutableList<QuizModel>
-    private lateinit var customQuizList : MutableList<CustomQuizModel>
-    private lateinit var quizAdapter: QuizAdapter
-    private lateinit var customQuizAdapter : CustomQuizAdapter
+    private lateinit var binding: ActivitySelectQuizBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private var quizList: MutableList<QuizModel> = mutableListOf()
+    private var customQuizList: MutableList<CustomQuizModel> = mutableListOf()
+    private var combinedQuizList: MutableList<Any> = mutableListOf()
+    private lateinit var quizAdapter: CombinedQuizAdapter
+    private lateinit var categorySpinner: Spinner
+    private var categoriesList: MutableList<String> = mutableListOf("All")
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         binding = ActivitySelectQuizBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_select_quiz)
+        setContentView(binding.root)
 
         applySavedTheme()
-        val categories = listOf("Sports","Entertainment","Animals","Geography","My Custom Quizzes")
-        val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,categories)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-        binding.categorySelectSpinner.adapter=adapter
 
-        binding.quizRecyclerView.layoutManager=LinearLayoutManager(this)
-
-        binding.categorySelectSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    val selectedCategory = parent.getItemAtPosition(position).toString()
-                    updateQuizRecyclerView(selectedCategory)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                //used for implementation
-            }
-
+        binding.returnBtn.setOnClickListener {
+            startActivity(Intent(this, DashboardActivity::class.java))
+            finish()
         }
 
-}
 
-   private fun updateQuizRecyclerView(category: String) {
-       if(category.equals("My Custom Quizzes")){
+        binding.quizRecyclerView.layoutManager = LinearLayoutManager(this)
+        categorySpinner = binding.categorySelectSpinner
 
-           customQuizList = fetchCustomQuizzes(auth.uid.toString())
-           customQuizAdapter = CustomQuizAdapter(customQuizList)
-           binding.quizRecyclerView.adapter = customQuizAdapter
 
-       }
-       else{
-           quizList = fetchQuizzesByCategory(category)
-           quizAdapter = QuizAdapter(quizList)
-           binding.quizRecyclerView.adapter = quizAdapter
-       }
-
-    }
-
-    private fun fetchCustomQuizzes(id : String) : MutableList<CustomQuizModel>{
-        RetrofitClient.instance.getMyQuizzes(id).enqueue(object : Callback<List<CustomQuizModel>>{
-            override fun onResponse(
-                call: retrofit2.Call<List<CustomQuizModel>>,
-                response: Response<List<CustomQuizModel>>
-            ) {
-                if(response.isSuccessful){
-                    customQuizList = response.body()?.toMutableList()!!
-                }
-            }
-
-            override fun onFailure(call: retrofit2.Call<List<CustomQuizModel>>, t: Throwable) {
-                Toast.makeText(this@SelectQuizActivity,"Error : ${t.message}",Toast.LENGTH_SHORT).show()
-            }
-
-        })
-        return customQuizList
-    }
-
-    private fun fetchQuizzesByCategory(category: String): MutableList<QuizModel> {
-        db.collection("Quizzes").whereEqualTo("Category", category).get().addOnSuccessListener {
-            categoryQuizzes ->
-            if(categoryQuizzes!=null){
-                for(quiz in categoryQuizzes){
-                    val toBeAddedQuiz = quiz.toObject<QuizModel>()
-                    quizList.add(toBeAddedQuiz)
-                }
-            }
-        }.addOnFailureListener{
-
+        fetchCategories {
+            fetchAllQuizzes()
         }
-        return quizList
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedCategory = categoriesList[position]
+                filterQuizzesByCategory(selectedCategory)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
     }
 
+    private fun applySavedTheme() {
+        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        val savedTheme: String? = sharedPreferences.getString("theme", "Red")
 
-    class QuizAdapter(private val quizList : List<QuizModel>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>(){
-        private lateinit var quizItemBinding : QuizListItemBinding
+        window.decorView.setBackgroundColor(
+            when (savedTheme) {
+                "White" -> Color.WHITE
+                "Blue" -> Color.BLUE
+                "Green" -> Color.GREEN
+                else -> Color.RED
+            }
+        )
+    }
 
-
-        inner class QuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-            val quizTV : TextView = quizItemBinding.quizNameTV
-
-            init {
-                itemView.setOnClickListener {
-                    val quiz = quizList[adapterPosition]
-
-                    val intent = Intent(itemView.context,QuizActivity::class.java).apply{
-                        putExtra("questions",ArrayList(quiz.Questions))
-                        putExtra("quizName",quiz.Name)
+    private fun fetchCategories(onSuccess: () -> Unit) {
+        db.collection("quizzes")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val category = document.getString("Category") ?: "Unknown"
+                    if (category !in categoriesList) {
+                        categoriesList.add(category)
                     }
-                    itemView.context.startActivity(intent)
                 }
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                categorySpinner.adapter = adapter
+                onSuccess()
             }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error fetching categories: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
 
+    private fun fetchAllQuizzes() {
+        db.collection("quizzes")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val quiz = document.toObject<QuizModel>()
+                    quizList.add(quiz)
+                }
+                fetchCustomQuizzes()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error fetching quizzes: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun fetchCustomQuizzes() {
+        db.collection("custom_quizzes")
+            .whereEqualTo("UserID", auth.currentUser?.uid)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val customQuiz = document.toObject<CustomQuizModel>()
+                    customQuizList.add(customQuiz)
+                }
+                combineQuizLists()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error fetching custom quizzes: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun combineQuizLists() {
+        combinedQuizList.clear()
+        combinedQuizList.addAll(quizList)
+        combinedQuizList.addAll(customQuizList)
+
+
+        quizAdapter = CombinedQuizAdapter(combinedQuizList)
+        binding.quizRecyclerView.adapter = quizAdapter
+    }
+
+    private fun filterQuizzesByCategory(selectedCategory: String) {
+        if (!::quizAdapter.isInitialized) {
+
+            return
         }
+
+        if (selectedCategory == "All") {
+            quizAdapter.updateData(combinedQuizList)
+            return
+        }
+        val filteredQuizzes = combinedQuizList.filter {
+            when (it) {
+                is QuizModel -> it.Category == selectedCategory
+                is CustomQuizModel -> it.Category == selectedCategory
+                else -> false
+            }
+        }
+        quizAdapter.updateData(filteredQuizzes)
+    }
+
+
+    inner class CombinedQuizAdapter(private var quizList: List<Any>) : RecyclerView.Adapter<CombinedQuizAdapter.QuizViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuizViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.quiz_list_item,parent,false)
+            val view = layoutInflater.inflate(R.layout.activity_quiz_item, parent, false)
             return QuizViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
-            val quiz = quizList[position]
-            holder.quizTV.text = quiz.Name
-        }
-
-        override fun getItemCount(): Int {
-            return quizList.size
-        }
-
-
-    }
-    class CustomQuizAdapter(private val quizList : List<CustomQuizModel>) : RecyclerView.Adapter<CustomQuizAdapter.CustomQuizViewHolder>(){
-        private lateinit var quizItemBinding : QuizListItemBinding
-
-
-        inner class CustomQuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-            val quizTV : TextView = quizItemBinding.quizNameTV
-            init {
-                itemView.setOnClickListener {
-                    val quiz = quizList[adapterPosition]
-
-                    val intent = Intent(itemView.context,QuizActivity::class.java).apply{
-                        putExtra("questions",ArrayList(quiz.Questions))
-                        putExtra("quizName",quiz.QuizName)
-                    }
-                    itemView.context.startActivity(intent)
+            when (val item = quizList[position]) {
+                is QuizModel -> {
+                    holder.bindQuiz(item)
+                }
+                is CustomQuizModel -> {
+                    holder.bindCustomQuiz(item)
                 }
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomQuizViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.quiz_list_item,parent,false)
-            return CustomQuizViewHolder(view)
+        override fun getItemCount(): Int = quizList.size
+
+        fun updateData(newQuizList: List<Any>) {
+            quizList = newQuizList
+            notifyDataSetChanged()
         }
 
-        override fun onBindViewHolder(holder: CustomQuizViewHolder, position: Int) {
-            val quiz = quizList[position]
-            holder.quizTV.text = quiz.QuizName
-        }
+        inner class QuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val quizName: TextView = itemView.findViewById(R.id.quizNameTextView)
+            private val quizCategory: TextView = itemView.findViewById(R.id.quizCategoryTextView)
 
-        override fun getItemCount(): Int {
-            return quizList.size
-        }
+            fun bindQuiz(quiz: QuizModel) {
+                quizName.text = quiz.Name // Ensure this property exists in QuizModel
+                quizCategory.text = quiz.Category
+            }
 
-
-    }
-
-    private fun applySavedTheme() {
-        // Retrieve saved theme from SharedPreferences
-        val sharedPreferences: SharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
-        val savedTheme: String? = sharedPreferences.getString("theme", "Red") // Default to Red if not found
-
-        // Set background color based on saved theme
-        when (savedTheme) {
-            "White" -> window.decorView.setBackgroundColor(Color.WHITE)
-            "Blue" -> window.decorView.setBackgroundColor(Color.BLUE)
-            "Green" -> window.decorView.setBackgroundColor(Color.GREEN)
+            fun bindCustomQuiz(customQuiz: CustomQuizModel) {
+                quizName.text = customQuiz.QuizName // Ensure QuizName exists in CustomQuizModel
+                quizCategory.text = customQuiz.Category
+            }
         }
     }
 }

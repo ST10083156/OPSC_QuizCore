@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class QuestionModel(
-    val Question: String,
+    val QuestionText: String,
     val Answer_1: String,
     val Answer_2: String,
     val Answer_3: String,
@@ -21,7 +21,7 @@ data class QuestionModel(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(Question)
+        parcel.writeString(QuestionText)
         parcel.writeString(Answer_1)
         parcel.writeString(Answer_2)
         parcel.writeString(Answer_3)
