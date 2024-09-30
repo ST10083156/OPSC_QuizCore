@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -39,12 +40,13 @@ class QuizActivity : AppCompatActivity() {
         quizName = intent.getStringExtra("quizName").toString()
         questions = intent.getParcelableArrayListExtra("questions") ?: emptyList()
         binding.questionResultTV.visibility = View.INVISIBLE
-        if(questions.isEmpty()){
-
-        }
-        else {
+        if (questions.isEmpty()) {
+            Toast.makeText(this, "No questions available.", Toast.LENGTH_SHORT).show()
+            finish() // Or redirect to another activity
+        } else {
             startQuestion(questions[currentQuestionIndex])
         }
+
 
 
 
@@ -60,54 +62,50 @@ class QuizActivity : AppCompatActivity() {
         binding.questionResultTV.visibility = View.INVISIBLE
 
         binding.optionABtn.setOnClickListener{
-            if(binding.optionABtn.text.toString().equals(questions[currentQuestionIndex])){
+            if (binding.optionABtn.text.toString() == question.CorrectAnswer) {
                 displayResult(true)
                 checkCorrectAnswer(binding.optionABtn.text.toString())
-            }
-            else{
+            } else {
                 displayResult(false)
                 checkCorrectAnswer(binding.optionABtn.text.toString())
-                binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
+                binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.red))
             }
+
             countDownTimer.cancel()
             afterClick()
         }
         binding.optionBBtn.setOnClickListener{
-            if(binding.optionBBtn.text.toString().equals(questions[currentQuestionIndex])){
+            if (binding.optionBBtn.text.toString() == question.CorrectAnswer) {
                 displayResult(true)
                 checkCorrectAnswer(binding.optionBBtn.text.toString())
-            }
-            else{
+            } else {
                 displayResult(false)
                 checkCorrectAnswer(binding.optionBBtn.text.toString())
-                binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
+                binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.red))
             }
             countDownTimer.cancel()
             afterClick()
         }
         binding.optionCBtn.setOnClickListener{
-            if(binding.optionCBtn.text.toString().equals(questions[currentQuestionIndex])){
+            if (binding.optionCBtn.text.toString() == question.CorrectAnswer) {
                 displayResult(true)
-
                 checkCorrectAnswer(binding.optionCBtn.text.toString())
-            }
-            else{
+            } else {
                 displayResult(false)
                 checkCorrectAnswer(binding.optionCBtn.text.toString())
-                binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
+                binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.red))
             }
             countDownTimer.cancel()
             afterClick()
         }
         binding.optionDBtn.setOnClickListener{
-            if(binding.optionDBtn.text.toString().equals(questions[currentQuestionIndex])){
-               displayResult(true)
+            if (binding.optionDBtn.text.toString() == question.CorrectAnswer) {
+                displayResult(true)
                 checkCorrectAnswer(binding.optionDBtn.text.toString())
-            }
-            else{
+            } else {
                 displayResult(false)
                 checkCorrectAnswer(binding.optionDBtn.text.toString())
-                binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.red))
+                binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.red))
             }
             countDownTimer.cancel()
             afterClick()
@@ -116,66 +114,66 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun startCountDownTimer() {
-        countDownTimer = object : CountDownTimer(10000, 100) {
+        countDownTimer = object : CountDownTimer(10000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val progress = (millisUntilFinished / 100).toInt()
+                val progress = (millisUntilFinished / 1000).toInt()
                 binding.secondsProgressBar.progress = progress
-                binding.progressSecondsTV.text = (progress / 100).toString()
+                binding.progressSecondsTV.text = progress.toString() // Show remaining seconds
             }
 
             override fun onFinish() {
                 binding.secondsProgressBar.progress = 0
                 displayResult(false)
-                currentQuestionIndex++
-                if (currentQuestionIndex < questions.size) {
-                    startQuestion(questions[currentQuestionIndex])
-                } else {
-                    val intent = Intent(this@QuizActivity,ScoreDisplayActivity::class.java).apply{
-                        putExtra("score",score)
-                    }
-                    startActivity(intent)
-                    finish()
-                }
+                afterClick()
             }
-        }.start()
+        }
+
     }
-    fun afterClick(){
-        binding.secondsProgressBar.progress = 0
-        displayResult(false)
+
+    fun afterClick() {
         currentQuestionIndex++
         if (currentQuestionIndex < questions.size) {
+            resetButtonColors()
             startQuestion(questions[currentQuestionIndex])
         } else {
-            val intent = Intent(this,ScoreDisplayActivity::class.java).apply{
-                putExtra("score",score)
+            val intent = Intent(this, ScoreDisplayActivity::class.java).apply {
+                putExtra("score", score)
             }
             startActivity(intent)
             finish()
         }
     }
 
-    fun checkCorrectAnswer(correctAnswer : String){
-        if(correctAnswer.equals(binding.optionABtn.text))
-        {
-            binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score ++
-        }
-        if(correctAnswer.equals(binding.optionBBtn.text))
-        {
-            binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score++
-        }
-        if(correctAnswer.equals(binding.optionCBtn.text))
-        {
-            binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score++
-        }
-        if(correctAnswer.equals(binding.optionDBtn.text))
-        {
-            binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity,R.color.green))
-            score++
+    private fun resetButtonColors() {
+        // Reset button colors to default (so the green/red doesn't persist across questions)
+        binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this, R.color.lavender))
+        binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.lavender))
+        binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.lavender))
+        binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.lavender))
+    }
+
+
+    fun checkCorrectAnswer(correctAnswer: String) {
+        when (correctAnswer) {
+            binding.optionABtn.text -> {
+                binding.optionABtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.green))
+                score++
+            }
+            binding.optionBBtn.text -> {
+                binding.optionBBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.green))
+                score++
+            }
+            binding.optionCBtn.text -> {
+                binding.optionCBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.green))
+                score++
+            }
+            binding.optionDBtn.text -> {
+                binding.optionDBtn.setBackgroundColor(ContextCompat.getColor(this@QuizActivity, R.color.green))
+                score++
+            }
         }
     }
+
 
     fun displayResult(result: Boolean){
         if(result == false)

@@ -23,7 +23,7 @@ import com.example.opsc_quizcore.Models.SettingsModel;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private RadioGroup rgColors, rgFontSize;
+    private RadioGroup rgColors, rgFontSize, rgDifficulty;
     private RadioButton rbRed, rbBlue, rbGreen, rbSmall, rbMedium, rbLarge;
     private Switch switchDarkMode;
     private Button btnSaveSettings, btnBack;
@@ -54,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         rbRed = findViewById(R.id.rbWhite);
         rbBlue = findViewById(R.id.rbBlue);
         rbGreen = findViewById(R.id.rbGreen);
+        rgDifficulty = findViewById(R.id.difficultyRG);
 
         rgFontSize = findViewById(R.id.rgFontSize);
         rbSmall = findViewById(R.id.rbSmall);
@@ -61,8 +62,12 @@ public class SettingsActivity extends AppCompatActivity {
         rbLarge = findViewById(R.id.rbLarge);
 
         switchDarkMode = findViewById(R.id.switchDarkMode);
+
+
+
         btnSaveSettings = findViewById(R.id.btnSaveSettings);
         btnBack = findViewById(R.id.btnBack);
+
 
         // Load saved UI state on activity start
         loadUIState();
@@ -78,6 +83,24 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();  // Closes the current activity
         });
+
+        /*rgDifficulty.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.easyRBtn:
+                        rgDifficulty.check(R.id.easyRBtn); // Check easyRBtn
+                        break;
+                    case R.id.mediumRBtn:
+                        rgDifficulty.check(R.id.mediumRBtn); // Check mediumRBtn
+                        break;
+                    case R.id.hardRBtn:
+                        rgDifficulty.check(R.id.hardRBtn); // Check hardRBtn
+                        break;
+                }
+            }
+        });*/
+
     }
 
     private void applySettingsToUI(SettingsModel settingsModel) {
@@ -169,4 +192,6 @@ public class SettingsActivity extends AppCompatActivity {
         switchDarkMode.setChecked("Dark".equals(mode));
     }
 }
+
+
 
