@@ -3,6 +3,7 @@ package com.example.opsc_quizcore
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.telecom.Call
 import android.view.LayoutInflater
@@ -162,29 +163,25 @@ class SelectQuizActivity : AppCompatActivity() {
 
 
 
-    class QuizAdapter(private val quizList : List<QuizModel>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>(){
-        private lateinit var quizItemBinding : QuizListItemBinding
+    class QuizAdapter(private val quizList: List<QuizModel>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>() {
 
-
-        inner class QuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-            val quizTV : TextView = quizItemBinding.quizNameTV
+        inner class QuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val quizTV: TextView = itemView.findViewById(R.id.quizNameTV) // Using findViewById
 
             init {
                 itemView.setOnClickListener {
                     val quiz = quizList[adapterPosition]
-
-                    val intent = Intent(itemView.context,QuizActivity::class.java).apply{
-                        putExtra("questions",ArrayList(quiz.Questions))
-                        putExtra("quizName",quiz.Name)
+                    val intent = Intent(itemView.context, QuizActivity::class.java).apply {
+                        putExtra("questions", ArrayList(quiz.Questions))
+                        putExtra("quizName", quiz.Name)
                     }
                     itemView.context.startActivity(intent)
                 }
             }
-
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuizViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.quiz_list_item,parent,false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.quiz_list_item, parent, false)
             return QuizViewHolder(view)
         }
 
@@ -196,12 +193,13 @@ class SelectQuizActivity : AppCompatActivity() {
         override fun getItemCount(): Int {
             return quizList.size
         }
-
-
     }
+
     class CustomQuizAdapter(private val quizList: List<CustomQuizModel>) : RecyclerView.Adapter<CustomQuizAdapter.CustomQuizViewHolder>() {
 
-        inner class CustomQuizViewHolder(private val binding: QuizListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        inner class CustomQuizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val quizNameTV: TextView = itemView.findViewById(R.id.quizNameTV) // Using findViewById
+
             init {
                 itemView.setOnClickListener {
                     val quiz = quizList[adapterPosition]
@@ -214,13 +212,13 @@ class SelectQuizActivity : AppCompatActivity() {
             }
 
             fun bind(quiz: CustomQuizModel) {
-                binding.quizNameTV.text = quiz.QuizName
+                quizNameTV.text = quiz.QuizName
             }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomQuizViewHolder {
-            val binding = QuizListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return CustomQuizViewHolder(binding)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.quiz_list_item, parent, false)
+            return CustomQuizViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: CustomQuizViewHolder, position: Int) {
@@ -232,6 +230,7 @@ class SelectQuizActivity : AppCompatActivity() {
             return quizList.size
         }
     }
+
 
 
 

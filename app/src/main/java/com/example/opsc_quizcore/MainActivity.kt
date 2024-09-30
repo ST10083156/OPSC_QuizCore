@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUser() {
         val userID = auth.uid
-        db.collection("Users").whereEqualTo("ID", userID).get().addOnSuccessListener { users ->
+        db.collection("Users").whereEqualTo("id", userID).get().addOnSuccessListener { users ->
             if (users.isEmpty) {
                 val intent = Intent(this, UserDetailsActivity::class.java)
                 startActivity(intent)
