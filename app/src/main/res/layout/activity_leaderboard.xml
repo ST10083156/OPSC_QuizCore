@@ -6,27 +6,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LeaderboardActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/leaderboardTV"
         android:text="Leaderboard"
         android:textAlignment="center"
-        android:textSize="48dp"
+        android:textSize="48sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"/>
 
     <ListView
         android:id="@+id/userListView"
         android:layout_width="match_parent"
-        android:layout_height="540dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:background="@color/white"/>
 
     <Button
         android:id="@+id/backBtn"
         android:text="Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
+        android:layout_gravity="center"
+        android:backgroundTint="@color/teal_200"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        android:padding="12dp"
+        />
 
 </LinearLayout>

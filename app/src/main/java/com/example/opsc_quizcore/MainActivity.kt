@@ -9,6 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.opsc_quizcore.Models.QuestionModel
+import com.example.opsc_quizcore.Models.QuizModel
 import com.example.opsc_quizcore.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -39,7 +41,109 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         applySavedTheme()
+binding.addQuizBtn.setOnClickListener{
+    val questionList : MutableList<QuestionModel> = mutableListOf()
+    val question1 = QuestionModel(
+        Question = "What is the capital of France?",
+        Answer_1 = "Madrid",
+        Answer_2 = "Rome",
+        Answer_3 = "Paris",
+        Answer_4 = "Berlin",
+        CorrectAnswer = "Paris"
+    )
+    val question2 = QuestionModel(
+        Question = "Which continent is the Sahara Desert located on?",
+        Answer_1 = "Asia",
+        Answer_2 = "Africa",
+        Answer_3 = "Australia",
+        Answer_4 = "South America",
+        CorrectAnswer = "Africa"
+    )
+    val question3 = QuestionModel(
+        Question = "Which ocean is the largest by area?",
+        Answer_1 = "Atlantic Ocean",
+        Answer_2 = "Indian Ocean",
+        Answer_3 = "Arctic Ocean",
+        Answer_4 = "Pacific Ocean",
+        CorrectAnswer = "Pacific Ocean"
+    )
+    val question4 = QuestionModel(
+        Question = "Which country is known as the Land of the Rising Sun?",
+        Answer_1 = "China",
+        Answer_2 = "Japan",
+        Answer_3 = "South Korea",
+        Answer_4 = "Thailand",
+        CorrectAnswer = "Japan"
+    )
+    val question5 = QuestionModel(
+        Question = "What is the longest river in the world?",
+        Answer_1 = "Amazon River",
+        Answer_2 = "Nile River",
+        Answer_3 = "Mississippi River",
+        Answer_4 = "Yangtze River",
+        CorrectAnswer = "Nile River"
+    )
+    val question6 = QuestionModel(
+        Question = "Mount Everest is located on which continent?",
+        Answer_1 = "South America",
+        Answer_2 = "Europe",
+        Answer_3 = "Africa",
+        Answer_4 = "Asia",
+        CorrectAnswer = "Asia"
+    )
+    val question7 = QuestionModel(
+        Question = "What is the capital of Australia?",
+        Answer_1 = "Sydney",
+        Answer_2 = "Canberra",
+        Answer_3 = "Melbourne",
+        Answer_4 = "Brisbane",
+        CorrectAnswer = "Canberra"
+    )
+    val question8 = QuestionModel(
+        Question = "Which country has the most people?",
+        Answer_1 = "India",
+        Answer_2 = "United States",
+        Answer_3 = "China",
+        Answer_4 = "Brazil",
+        CorrectAnswer = "China"
+    )
+    val question9 = QuestionModel(
+        Question = "What is the smallest country in the world?",
+        Answer_1 = "Monaco",
+        Answer_2 = "Vatican City",
+        Answer_3 = "Lichtenstein",
+        Answer_4 = "San Marino",
+        CorrectAnswer = "Vatican City"
+    )
+    val question10 = QuestionModel(
+        Question = "Which ocean lies to the east of the United States?",
+        Answer_1 = "Pacific Ocean",
+        Answer_2 = "Indian Ocean",
+        Answer_3 = "Atlantic Ocean",
+        Answer_4 = "Arctic Ocean",
+        CorrectAnswer = "Pacific Ocean"
+    )
+    questionList.add(question1)
+    questionList.add(question2)
+    questionList.add(question3)
+    questionList.add(question4)
+    questionList.add(question5)
+    questionList.add(question6)
+    questionList.add(question7)
+    questionList.add(question8)
+    questionList.add(question9)
+    questionList.add(question10)
 
+    val quiz = QuizModel(
+        Name = "Simple Geography",
+        Category = "Geography",
+        Questions = questionList.toList()
+
+    )
+    db.collection("Quizzes").add(quiz).addOnSuccessListener {
+        Toast.makeText(this,"Successfully added quiz",Toast.LENGTH_SHORT)
+    }
+}
         // Google sign-in setup
         val googleSO = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()

@@ -6,10 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DashboardActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"> <!-- Added gravity for centering content -->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"> <!-- Center the profile image and username -->
         <ImageView
             android:id="@+id/userProfileImage"
             android:layout_width="75dp"
@@ -20,41 +24,55 @@
             android:id="@+id/userTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:layout_margin="30dp"
             android:text="Username"/>
-
     </LinearLayout>
+
     <TextView
         android:id="@+id/scoreHeadingTV"
         android:text="Current Score"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textSize="36dp"
+        android:textSize="36sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"/>
+
     <TextView
         android:id="@+id/scoreTv"
         android:text="0"
-        android:textSize="36dp"
-       android:textAlignment="center"
+        android:textSize="36sp"
+    android:textAlignment="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
+        android:gravity="center">
+
     <Button
         android:id="@+id/leaderboardBtn"
         android:text="Leaderboard"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"/>
+
     <Button
         android:id="@+id/quizBtn"
         android:text="Quizzes"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-<Button
-    android:id="@+id/createQuizBtn"
-    android:text="Create Quiz"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"/> <!-- Added margin for spacing -->
 
-
+    <Button
+        android:id="@+id/createQuizBtn"
+        android:text="Create Quiz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"/> <!-- Added margin for spacing -->
 </LinearLayout>
+    </LinearLayout>
