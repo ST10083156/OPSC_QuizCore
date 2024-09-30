@@ -227,7 +227,7 @@ class SelectQuizActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return quizList.size
+            return  quizList.size
         }
     }
 
